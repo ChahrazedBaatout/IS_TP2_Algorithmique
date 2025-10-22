@@ -1,10 +1,10 @@
-//en utilisant une matrice d'adjacence
+// en utilisant une liste d'adjacence
 #include <iostream>
 #include <fstream>
 #include <vector>
 using namespace std;
 
-void lireGraphe(const string& nomFichier, vector<vector<int>>& adj, int& n, int& m) {
+void lireGrapheListe(const string& nomFichier, vector<vector<int>>& adj, int& n, int& m) {
     ifstream fin(nomFichier);
     if (!fin) {
         cerr << "Erreur : impossible d’ouvrir le fichier " << nomFichier << endl;
@@ -12,28 +12,30 @@ void lireGraphe(const string& nomFichier, vector<vector<int>>& adj, int& n, int&
     }
 
     fin >> n >> m;
-    adj.assign(n, vector<int>(n, 0));
+    adj.assign(n, {});
+
     for (int i = 0; i < m; ++i) {
         int u, v;
         fin >> u >> v;
-        adj[u - 1][v - 1] = 1;
-        adj[v - 1][u - 1] = 1;
+        adj[u - 1].push_back(v - 1);
+        adj[v - 1].push_back(u - 1);
     }
+
     fin.close();
 }
 
-void DFS(int sommet, const vector<vector<int>>& adj, vector<bool>& visite, vector<int>& composante) {
+void DFSListe(int sommet, const vector<vector<int>>& adj, vector<bool>& visite, vector<int>& composante) {
     visite[sommet] = true;
     composante.push_back(sommet);
 
-    for (int i = 0; i < adj.size(); ++i) {
-        if (adj[sommet][i] == 1 && !visite[i]) {
-            DFS(i, adj, visite, composante);
+    for (int voisin : adj[sommet]) {
+        if (!visite[voisin]) {
+            DFSListe(voisin, adj, visite, composante);
         }
     }
 }
 
-vector<vector<int>> trouverComposantes(const vector<vector<int>>& adj) {
+vector<vector<int>> trouverComposantesListe(const vector<vector<int>>& adj) {
     int n = adj.size();
     vector<bool> visite(n, false);
     vector<vector<int>> composantes;
@@ -41,14 +43,15 @@ vector<vector<int>> trouverComposantes(const vector<vector<int>>& adj) {
     for (int i = 0; i < n; ++i) {
         if (!visite[i]) {
             vector<int> composante;
-            DFS(i, adj, visite, composante);
+            DFSListe(i, adj, visite, composante);
             composantes.push_back(composante);
         }
     }
+
     return composantes;
 }
 
-void ecrireResultat(const string& nomFichier, const vector<vector<int>>& composantes) {
+void ecrireResultatListe(const string& nomFichier, const vector<vector<int>>& composantes) {
     ofstream fout(nomFichier);
     if (!fout) {
         cerr << "Erreur : impossible d’écrire dans " << nomFichier << endl;
@@ -66,15 +69,16 @@ void ecrireResultat(const string& nomFichier, const vector<vector<int>>& composa
     fout.close();
 }
 
+
 int main() {
     vector<vector<int>> adj;
     int n, m;
 
-    lireGraphe("../Exercice4/INPCONGRAPH.txt", adj, n, m);
+    lireGrapheListe("../Exercice4/INPCONGRAPH.txt", adj, n, m);
 
-    vector<vector<int>> composantes = trouverComposantes(adj);
+    vector<vector<int>> composantes = trouverComposantesListe(adj);
 
-    ecrireResultat("../Exercice4/OUTCONGRAPH.TXT", composantes);
+    ecrireResultatListe("../Exercice4/OUTCONGRAPH_LIST.TXT", composantes);
 
     if (composantes.size() == 1)
         cout << "Le graphe est connexe." << endl;
