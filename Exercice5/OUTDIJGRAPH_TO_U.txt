@@ -1,0 +1,20 @@
+sommet = 2 distance minimale = 1
+chemin
+1 → 2
+
+sommet = 3 distance minimale = 3
+chemin
+1 → 2 → 3
+
+sommet = 4 distance minimale = 15
+chemin
+1 → 2 → 3 → 6 → 5 → 4
+
+sommet = 5 distance minimale = 10
+chemin
+1 → 2 → 3 → 6 → 5
+
+sommet = 6 distance minimale = 6
+chemin
+1 → 2 → 3 → 6
+

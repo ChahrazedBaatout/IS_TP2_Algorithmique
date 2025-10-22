@@ -220,12 +220,64 @@ void dijkstraListeAdjacence(ifstream &fin, ofstream &fout) {
     fout << endl;
 }
 
+void dijkstraAllMatriceAdjacence(ifstream &fin, ofstream &fout) {
+    int n, m, start, end;
+    fin >> n >> m >> start >> end;
+    vector<vector<int>> adj(n + 1, vector<int>(n + 1, 0));
+    for (int i = 0; i < m; ++i) {
+        int u, v, w;
+        fin >> u >> v >> w;
+        adj[u][v] = w;
+        adj[v][u] = w;
+    }
+
+    vector<int> dist(n + 1, numeric_limits<int>::max());
+    vector<int> prev(n + 1, -1);
+    vector<bool> vis(n + 1, false);
+    dist[start] = 0;
+    priority_queue<pair<int, int>, vector<pair<int, int>>, greater<>> pq;
+    pq.push({0, start});
+
+    while (!pq.empty()) {
+        int d = pq.top().first, u = pq.top().second; pq.pop();
+        if (vis[u]) continue;
+        vis[u] = true;
+        for (int v = 1; v <= n; ++v) {
+            if (adj[u][v] > 0 && dist[v] > dist[u] + adj[u][v]) {
+                dist[v] = dist[u] + adj[u][v];
+                prev[v] = u;
+                pq.push({dist[v], v});
+            }
+        }
+    }
+
+    for (int u = 1; u <= n; ++u) {
+        if (u == start) continue;
+        fout << "sommet = " << u << " distance minimale = ";
+        if (dist[u] == numeric_limits<int>::max()) {
+            fout << "infini\nchemin\n";
+            continue;
+        }
+        fout << dist[u] << "\nchemin\n";
+        vector<int> path;
+        for (int v = u; v != -1; v = prev[v])
+            path.push_back(v);
+        reverse(path.begin(), path.end());
+        for (size_t i = 0; i < path.size(); ++i) {
+            fout << path[i];
+            if (i + 1 < path.size()) fout << " → ";
+        }
+        fout << "\n\n";
+    }
+}
+
 int main() {
     ifstream fin("../Exercice5/INPDIJGRAPH.txt");
     ofstream fout("../Exercice5/OUTDIJGRAPH.txt");
     ofstream fout2("../Exercice5/OUTDIJGRAPH_LISTE.txt");
     ofstream fout3("../Exercice5/OUTDIJGRAPH_TAS_MATRICE.txt");
     ofstream fout4("../Exercice5/OUTDIJGRAPH_TAS_LISTE.txt");
+    ofstream fout5("../Exercice5/OUTDIJGRAPH_TO_U.txt");
     dijkstraMatriceAdjacence(fin, fout);
     fin.clear();
     fin.seekg(0, ios::beg);
@@ -236,5 +288,8 @@ int main() {
     fin.clear();
     fin.seekg(0, ios::beg);
     dijkstraTasListeAdjacence(fin,fout4);
+    fin.clear();
+    fin.seekg(0, ios::beg);
+    dijkstraAllMatriceAdjacence(fin,fout5);
     return 0;
 }

@@ -1,0 +1,11 @@
+Les matrices d'adjacences, il y'a de la redondances dans le stockage des informations, pour la même arrete on stocke deux fois l'information (u,v) et (v,u)
+
+Les solutions 5.2 (liste d’adjacence) et 5.3 (tas + liste d’adjacence) sont plus efficaces en mémoire et en temps pour les graphes:
+
+- Liste d’adjacence (5.2):
+Utilise moins de mémoire pour les graphes peu denses, car seules les arêtes existantes sont stockées.
+Parcours plus rapide des voisins d’un sommet.
+
+- Tas (5.3):
+Permet d’extraire plus rapidement le sommet de distance minimale (O(log n) au lieu de O(n)).
+Rend l’algorithme de Dijkstra plus efficace.
