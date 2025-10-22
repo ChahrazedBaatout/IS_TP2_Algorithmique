@@ -15,3 +15,6 @@ add_executable(Exercice3
 
 add_executable(Exercice4
         Exercice4/Question4V2.cpp)
+
+add_executable(Exercice5 Exercice5/Question5.cpp)
+
