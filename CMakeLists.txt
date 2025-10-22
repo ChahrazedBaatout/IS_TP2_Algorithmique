@@ -5,3 +5,6 @@ set(CMAKE_CXX_STANDARD 14)
 
 add_executable(Exercice1
         Exercice1/Question1.cpp)
+
+add_executable(Exercice2
+        Exercice2/Question2.cpp)
