@@ -8,3 +8,7 @@ add_executable(Exercice1
 
 add_executable(Exercice2
         Exercice2/Question2.cpp)
+
+add_executable(Exercice3
+        Exercice3/Question3.cpp
+        Exercice3/Question3.cpp)
