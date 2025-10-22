@@ -91,6 +91,47 @@ void dijkstraTasMatriceAdjacence(ifstream &fin, ofstream &fout) {
     fout << endl;
 }
 
+void dijkstraTasListeAdjacence(ifstream &fin, ofstream &fout) {
+    int n, m, start, end;
+    fin >> n >> m >> start >> end;
+    vector<vector<pair<int, int>>> adj(n + 1);
+    for (int i = 0; i < m; ++i) {
+        int u, v, w;
+        fin >> u >> v >> w;
+        adj[u].emplace_back(v, w);
+        adj[v].emplace_back(u, w);
+    }
+
+    vector<int> dist(n + 1, numeric_limits<int>::max());
+    vector<int> prev(n + 1, -1);
+    dist[start] = 0;
+    TasMin heap(n + 1, dist);
+
+    while (!heap.empty()) {
+        int u = heap.extractMin();
+        if (dist[u] == numeric_limits<int>::max()) break;
+        for (auto &[v, w] : adj[u]) {
+            if (dist[v] > dist[u] + w) {
+                dist[v] = dist[u] + w;
+                prev[v] = u;
+                heap.decreaseKey(v);
+            }
+        }
+    }
+
+    vector<int> path;
+    for (int v = end; v != -1; v = prev[v])
+        path.push_back(v);
+    reverse(path.begin(), path.end());
+
+    fout << dist[end] << endl;
+    for (size_t i = 0; i < path.size(); ++i) {
+        fout << path[i];
+        if (i + 1 < path.size()) fout << " → ";
+    }
+    fout << endl;
+}
+
 void dijkstraMatriceAdjacence(ifstream &fin, ofstream &fout) {
     int n, m, start, end;
     fin >> n >> m >> start >> end;
@@ -184,6 +225,7 @@ int main() {
     ofstream fout("../Exercice5/OUTDIJGRAPH.txt");
     ofstream fout2("../Exercice5/OUTDIJGRAPH_LISTE.txt");
     ofstream fout3("../Exercice5/OUTDIJGRAPH_TAS_MATRICE.txt");
+    ofstream fout4("../Exercice5/OUTDIJGRAPH_TAS_LISTE.txt");
     dijkstraMatriceAdjacence(fin, fout);
     fin.clear();
     fin.seekg(0, ios::beg);
@@ -191,5 +233,8 @@ int main() {
     fin.clear();
     fin.seekg(0, ios::beg);
     dijkstraTasMatriceAdjacence(fin,fout3);
+    fin.clear();
+    fin.seekg(0, ios::beg);
+    dijkstraTasListeAdjacence(fin,fout4);
     return 0;
 }
